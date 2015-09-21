@@ -37,18 +37,18 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
                     template += '<li role="presentation" ng-repeat="option in options | filter: searchFilter">';
                 }
 
-                if (typeof disableKey !== "undefined" && disableKey !== null) {
-                    template += '<a ng-if="option[\'disableKey\']" role="menuitem" tabindex="-1" >'; // TODO: Grey it out
-                    template += '<a ng-if="!option[\'disableKey\']" role="menuitem" tabindex="-1" ng-click="setSelectedItem(getPropertyForObject(option,settings.idProp))">';
+                var subtemp = ''                
+                if (checkboxes) {
+                    subtemp += '<div class="checkbox"><label><input class="checkboxInput" type="checkbox" ng-click="checkboxClick($event, getPropertyForObject(option,settings.idProp))" ng-checked="isChecked(getPropertyForObject(option,settings.idProp))" /> {{getPropertyForObject(option, settings.displayProp)}}</label></div></a>';
                 } else {
-                    template += '<a role="menuitem" tabindex="-1" ng-click="setSelectedItem(getPropertyForObject(option,settings.idProp))">';
+                    subtemp += '<span data-ng-class="{\'glyphicon glyphicon-ok\': isChecked(getPropertyForObject(option,settings.idProp))}"></span> {{getPropertyForObject(option, settings.displayProp)}}</a>';
                 }
 
-
-                if (checkboxes) {
-                    template += '<div class="checkbox"><label><input class="checkboxInput" type="checkbox" ng-click="checkboxClick($event, getPropertyForObject(option,settings.idProp))" ng-checked="isChecked(getPropertyForObject(option,settings.idProp))" /> {{getPropertyForObject(option, settings.displayProp)}}</label></div></a>';
+                if (typeof disableKey !== "undefined" && disableKey !== null) {
+                    template += '<a ng-if="option.' + disableKey + ' == true" class="dropdown-option-disabled" role="menuitem" tabindex="-1" >' + subtemp;
+                    template += '<a ng-if="option.' + disableKey + ' !== true" role="menuitem" tabindex="-1" ng-click="setSelectedItem(getPropertyForObject(option,settings.idProp))">' + subtemp;
                 } else {
-                    template += '<span data-ng-class="{\'glyphicon glyphicon-ok\': isChecked(getPropertyForObject(option,settings.idProp))}"></span> {{getPropertyForObject(option, settings.displayProp)}}</a>';
+                    template += '<a role="menuitem" tabindex="-1" ng-click="setSelectedItem(getPropertyForObject(option,settings.idProp))">' + subtemp;
                 }
 
                 template += '</li>';
@@ -298,4 +298,4 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
                 $scope.externalEvents.onInitDone();
             }
         };
-}]);
+}])
